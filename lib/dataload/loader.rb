@@ -15,7 +15,7 @@ end
 
 class Loader
   fattr(:columns) { [] }
-  attr_accessor :source_filename
+  attr_accessor :source_filename, :db_ops
   fattr(:source_rows) do
     res = []
     FasterCSV.foreach(source_filename, :headers => true) do |row|
@@ -72,6 +72,8 @@ class Loader
     target_hashes.map { |h| ar.new(h) }
   end
   def load!
+    ActiveRecord::Base.establish_connection(db_ops)
+    migrate!
     ar_objects.each { |x| x.save! }
   end
 end
@@ -98,34 +100,15 @@ class LoaderDSL
     loader.source_filename = file
   end
   def database(ops)
-    ActiveRecord::Base.establish_connection(ops)
+    loader.db_ops = ops
   end
 end
 
 def dataload(&b)
   dsl = LoaderDSL.new
   dsl.instance_eval(&b)
-  dsl.loader.migrate!
   dsl.loader.load!
   puts "Row Count: " + dsl.loader.ar.find(:all).size.to_s
-end
-
-class Foo
-  attr_accessor :bar
-  include FromHash
-end
-
-class TargetRow
-  attr_accessor :h
-  include FromHash
-end
-
-def foo
-  l = Loader.new
-  l.columns << Column.new(:target_name => 'abc', :blk => lambda { |x| x.bar+"x"} )
-  l.source_rows = [Foo.new(:bar => "Cat")]
-  puts l.columns.first.target_value(l.source_rows.first)
-  puts l.target_hashes.inspect
 end
 
 dataload do
