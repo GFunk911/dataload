@@ -22,7 +22,7 @@ class OracleBatchInsert < StandardBatchInsert
     rows.each do |row|
       str << "INTO #{table_name} #{columns_sql} VALUES #{row.insert_values_sql}"
     end
-    str.join("\n") + "\nSELECT * from dual;"
+    str.join("\n") + "\nSELECT * from dual"
   end
 end
 

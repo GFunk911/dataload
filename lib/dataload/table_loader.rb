@@ -1,7 +1,8 @@
 require 'rubygems'
 require 'mharris_ext'
+#require "/Code/mharris_ext/lib/mharris_ext"
 require 'fastercsv'
-require 'activerecord'
+require 'active_record'
 require 'facets/enumerable'
 
 %w(migration column table_module batch_insert).each { |x| require File.dirname(__FILE__) + "/#{x}" }
@@ -38,17 +39,11 @@ class TableLoader
       yield(target_hashes(rows),i*block_size+rows.size)
     end
   end
-  def next_pk
-    @next_pk ||= 1
-    @next_pk += 1
-    @next_pk
-  end
   def load!
     migrate!
     Dataload.log "Starting load of table '#{table_name}'"
     total = 0
     target_hash_groups do |hs,num_inserted|
-      hs.each { |h| h[:id] = next_pk }
       BatchInsert.get_class.new(:rows => hs, :table_name => table_name).insert!
       Dataload.log "Inserted #{block_size} rows into table '#{table_name}'.  Total of #{num_inserted} rows inserted."
       total = num_inserted
@@ -60,7 +55,7 @@ end
 module TableCreation
   fattr(:migration) do
     DataloadMigration.new_migration(:cols => columns, :table_name => table_name) do
-      create_table table_name do |t|
+      create_table(table_name, :id => false) do |t|
         cols.each do |col|
           t.column col.target_name, :string
         end
