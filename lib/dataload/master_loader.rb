@@ -1,6 +1,6 @@
 class MasterLoader
   include Singleton
-  attr_accessor_nn :raw_table_load_order, :db_ops
+  attr_accessor_nn :raw_table_load_order, :db_ops, :block_size
   fattr(:raw_table_delete_order) { raw_table_load_order.reverse }
   fattr(:tables_in_load_order) do
     raw_table_load_order.map { |x| table_hash[x.to_s] }
@@ -19,6 +19,7 @@ class MasterLoader
     tables_in_load_order.each { |t| t.loader.load! }
   end
   def run!
+    tables_in_load_order.each { |t| t.loader.block_size = block_size }
     tm("MasterLoader run") do
       connect!
       delete_rows!

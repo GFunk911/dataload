@@ -11,11 +11,23 @@ require 'facets/enumerable'
 %w(migration column table_module batch_insert).each { |x| require File.dirname(__FILE__) + "/#{x}" }
 Dir[File.dirname(__FILE__) + "/ext/*.rb"].each { |x| require x }
 
+class Object
+  def fattr_tm(name,&b)
+    fattr(name) do
+      tm(name) do
+        instance_eval(&b)
+      end
+    end
+  end
+end
+      
+
 class TableLoader
   include TableModule
   attr_accessor_nn :source_filename
+  fattr(:block_size) { 1000 }
   fattr(:columns) { [] }
-  fattr(:source_rows) do
+  fattr_tm(:source_rows) do
     Enumerable::Enumerator.new(FasterCSV,:foreach,source_filename,:headers => true).to_a
   end
   def target_hash_for_row(row)
@@ -24,14 +36,17 @@ class TableLoader
   fattr(:target_hashes) do
     source_rows.map { |x| target_hash_for_row(x) }
   end
-  def target_hash_groups
-    Enumerable::Enumerator.new(target_hashes,:each_by,1000).to_a
+  fattr(:target_hash_groups) do
+    Enumerable::Enumerator.new(target_hashes,:each_by,block_size).to_a
   end
   def load!
     migrate!
     #ar_objects.each { |x| x.save! }
-    target_hash_groups.each do |hs|
-      BatchInsert.new(:rows => hs, :table_name => table_name).insert!
+    tm("target_hash_groups") { target_hash_groups }
+    tm("actual insert") do
+      target_hash_groups.each do |hs|
+        BatchInsert.new(:rows => hs, :table_name => table_name).insert!
+      end
     end
     puts "#{table_name} Row Count: #{ar_cls.count}"
   end

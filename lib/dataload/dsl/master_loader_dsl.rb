@@ -13,6 +13,9 @@ class MasterLoaderDSL
   def delete_order(*tables)
     master.raw_table_delete_order = tables.flatten
   end
+  def block_size(n)
+    master.block_size = n
+  end
   def run!
     master.run!
   end

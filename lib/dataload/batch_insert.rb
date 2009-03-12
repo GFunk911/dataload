@@ -12,8 +12,7 @@ class BatchInsert
     "INSERT into #{table_name} #{columns_sql} #{values_sql};"
   end
   def insert!
-    tm("insert_sql") { insert_sql }
-    tm("actual insert") { ActiveRecord::Base.connection.execute(insert_sql) }
+    ActiveRecord::Base.connection.execute(insert_sql) 
   end
 end
     
