@@ -1,4 +1,4 @@
-class BatchInsert
+class StandardBatchInsert
   include FromHash
   attr_accessor :rows, :table_name
   fattr(:column_names) { rows.first.sorted_column_names }
@@ -16,3 +16,22 @@ class BatchInsert
   end
 end
     
+class OracleBatchInsert < StandardBatchInsert
+  fattr(:insert_sql) do
+    str = ["INSERT ALL "]
+    rows.each do |row|
+      str << "INTO #{table_name} #{columns_sql} VALUES #{row.insert_values_sql}"
+    end
+    str.join("\n") + "\nSELECT * from dual;"
+  end
+end
+
+class BatchInsert
+  def self.get_class
+    if %w(oci oci8 oracle).include?(MasterLoader.instance.db_ops[:adapter])
+      OracleBatchInsert
+    else
+      StandardBatchInsert
+    end
+  end
+end

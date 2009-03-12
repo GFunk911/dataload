@@ -3,10 +3,10 @@ class MasterLoader
   attr_accessor_nn :raw_table_load_order, :db_ops, :block_size
   fattr(:raw_table_delete_order) { raw_table_load_order.reverse }
   fattr(:tables_in_load_order) do
-    raw_table_load_order.map { |x| table_hash[x.to_s] }
+    raw_table_load_order.map { |x| table_hash[x.to_s]||raise("can't find table #{x}") }
   end
   fattr(:tables_in_delete_order) do
-    raw_table_delete_order.map { |x| table_hash[x.to_s] }
+    raw_table_delete_order.map { |x| table_hash[x.to_s]||raise("can't find table #{x}") }
   end
   fattr(:table_hash) { {} }
   def add(tl)

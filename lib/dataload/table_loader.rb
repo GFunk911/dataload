@@ -38,12 +38,18 @@ class TableLoader
       yield(target_hashes(rows),i*block_size+rows.size)
     end
   end
+  def next_pk
+    @next_pk ||= 1
+    @next_pk += 1
+    @next_pk
+  end
   def load!
     migrate!
     Dataload.log "Starting load of table '#{table_name}'"
     total = 0
     target_hash_groups do |hs,num_inserted|
-      BatchInsert.new(:rows => hs, :table_name => table_name).insert!
+      hs.each { |h| h[:id] = next_pk }
+      BatchInsert.get_class.new(:rows => hs, :table_name => table_name).insert!
       Dataload.log "Inserted #{block_size} rows into table '#{table_name}'.  Total of #{num_inserted} rows inserted."
       total = num_inserted
     end
