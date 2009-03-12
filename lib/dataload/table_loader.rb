@@ -1,9 +1,5 @@
 require 'rubygems'
-begin
-  require "/Code/mharris_ext/lib/mharris_ext"
-rescue
-  require 'mharris_ext'
-end
+require 'mharris_ext'
 require 'fastercsv'
 require 'activerecord'
 require 'facets/enumerable'
