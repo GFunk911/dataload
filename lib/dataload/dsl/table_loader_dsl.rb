@@ -26,7 +26,7 @@ class TableLoaderDSL
   def run!
     instance_eval(&@blk)
     loader.load!
-    puts "Row Count: " + loader.ar_cls.find(:all).size.to_s
+    puts "Row Count: #{loader.ar_cls.count}"
   end
 end
 
