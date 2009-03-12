@@ -15,7 +15,6 @@ File.create(source_filename,source_text)
 
 #load into a database, creating the table if needed
 table_dataload do
-  #clear_table_first
   # csv file the data is being sourced from
   source source_filename
   
@@ -25,6 +24,9 @@ table_dataload do
   #database :adapter => 'sqlserver', :host => '192.168.1.49', :username => 'pci-tae', :password => 'fgfgf', :database => 'fgfgfgf'
   table 'people'
   
+  #field delimiter in source file
+  delimiter ","
+    
   # columns in the new table
   # available types are string, text, integer, float, decimal, datetime, timestamp, time, date, binary, boolean
   #

@@ -46,5 +46,7 @@ class TableLoaderDSL
 end
 
 def table_dataload(&b)
-  TableLoaderDSL.new(&b)
+  handle_errors do
+    TableLoaderDSL.new(&b)
+  end
 end

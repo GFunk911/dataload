@@ -21,7 +21,6 @@ class Object
   end
 end
       
-
 class TableLoader
   include TableModule
   attr_accessor_nn :source_filename
@@ -40,16 +39,19 @@ class TableLoader
   end
   def target_hash_groups
     source_row_groups.each_with_index do |rows,i|
-      yield(target_hashes(rows),(i+1)*block_size)
+      yield(target_hashes(rows),i*block_size+rows.size)
     end
   end
   def load!
     migrate!
+    Dataload.log "Starting load of table '#{table_name}'"
+    total = 0
     target_hash_groups do |hs,num_inserted|
       BatchInsert.new(:rows => hs, :table_name => table_name).insert!
-      puts "Inserted #{num_inserted} #{Time.now}" if num_inserted%25000 == 0
+      Dataload.log "Inserted #{block_size} rows into table '#{table_name}'.  Total of #{num_inserted} rows inserted."
+      total = num_inserted
     end
-    puts "#{table_name} Row Count: #{ar_cls.count}"
+    Dataload.log "Finished load of table '#{table_name}'.  Loaded #{total} rows."
   end
 end
 

@@ -30,5 +30,6 @@ class MasterLoader
   end
   def connect!
     ActiveRecord::Base.establish_connection(db_ops)
+    Dataload.log "Established Connection"
   end
 end

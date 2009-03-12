@@ -22,5 +22,7 @@ class MasterLoaderDSL
 end
 
 def master_dataload(&b)
-  MasterLoaderDSL.new(&b).run!
+  handle_errors do
+    MasterLoaderDSL.new(&b).run!
+  end
 end

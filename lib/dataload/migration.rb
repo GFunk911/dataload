@@ -10,6 +10,7 @@ class DataloadMigration < ActiveRecord::Migration
     cls.class_eval do
       def self.up
         instance_eval(&b)
+        Dataload.log "Created table #{table_name}"
       end
     end
     cls
