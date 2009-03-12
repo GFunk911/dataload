@@ -7,7 +7,7 @@ end
 require 'fastercsv'
 require 'activerecord'
 
-%w(migration column table_module).each { |x| require File.dirname(__FILE__) + "/#{x}" }
+%w(migration column table_module batch_insert).each { |x| require File.dirname(__FILE__) + "/#{x}" }
 Dir[File.dirname(__FILE__) + "/ext/*.rb"].each { |x| require x }
 
 class TableLoader
@@ -28,7 +28,8 @@ class TableLoader
   end
   def load!
     migrate!
-    ar_objects.each { |x| x.save! }
+    #ar_objects.each { |x| x.save! }
+    BatchInsert.new(:rows => ar_objects).insert!
     puts "#{table_name} Row Count: #{ar_cls.count}"
   end
 end

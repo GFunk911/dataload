@@ -19,9 +19,13 @@ class MasterLoader
     tables_in_load_order.each { |t| t.loader.load! }
   end
   def run!
-    connect!
-    delete_rows!
-    load_rows!
+    tm("MasterLoader run") do
+      connect!
+      #ActiveRecord::Base.transaction do
+        delete_rows!
+        load_rows!
+      #end
+    end
   end
   def connect!
     ActiveRecord::Base.establish_connection(db_ops)

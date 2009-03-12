@@ -11,6 +11,7 @@ Bob Smith,24,Atlanta,GA
 Jane Doe,35,Buffalo,NY
 Evan Stein,31,Princeton,NJ
 EOF
+source_text = (1..1000).map { source_text }.join
 File.create(source_filename,source_text)
 
 #load into a database, creating the table if needed
@@ -47,6 +48,7 @@ table_dataload do
 end
 
 master_dataload do
-  database :adapter => 'sqlite3', :database => db_path, :timeout => 5000
+  #database :adapter => 'sqlite3', :database => db_path, :timeout => 5000
+  database :adapter => 'mysql', :database => 'dataload_test', :username => 'root'
   load_order :people
 end
