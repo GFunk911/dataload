@@ -1,5 +1,8 @@
 class TableLoaderDSL
   fattr(:loader) { TableLoader.new }
+  def initialize(&b)
+    @blk = b
+  end
   def column(name,type,&blk)
     blk ||= lambda { |x| x.send(name) }
     loader.columns << Column.new(:target_name => name, :blk => blk)
@@ -20,11 +23,13 @@ class TableLoaderDSL
   def table(name)
     loader.table_name = name
   end
+  def run!
+    instance_eval(&@blk)
+    loader.load!
+    puts "Row Count: " + loader.ar_cls.find(:all).size.to_s
+  end
 end
 
 def table_dataload(&b)
-  dsl = TableLoaderDSL.new
-  dsl.instance_eval(&b)
-  dsl.loader.load!
-  puts "Row Count: " + dsl.loader.ar_cls.find(:all).size.to_s
+  TableLoaderDSL.new(&b).run!
 end
