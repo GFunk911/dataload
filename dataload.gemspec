@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{dataload}
-  s.version = "0.3.3"
+  s.version = "0.3.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mike Harris"]
   s.date = %q{2009-03-12}
   s.email = %q{GFunk913@gmail.com}
   s.extra_rdoc_files = ["README.rdoc", "LICENSE"]
-  s.files = ["README.rdoc", "VERSION.yml", "lib/dataload", "lib/dataload/db.sqlite3", "lib/dataload/loader.rb", "lib/dataload/sample.rb", "lib/dataload/source.csv", "lib/dataload.rb", "spec/dataload_spec.rb", "spec/spec_helper.rb", "LICENSE"]
+  s.files = ["lib/dataload/loader.rb", "lib/dataload/sample.rb", "lib/dataload.rb", "spec/dataload_spec.rb", "spec/spec_helper.rb", "LICENSE", "README.rdoc", "VERSION.yml"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/GFunk911/dataload}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
