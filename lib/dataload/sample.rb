@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'dataload'
+require File.dirname(__FILE__) + '/../dataload'
 
 #setup the sample source file
 source_filename = File.dirname(__FILE__) + "/sample_source.csv"
@@ -13,12 +13,14 @@ File.create(source_filename,source_text)
 
 #load into a database, creating the table if needed
 dataload do
+  #clear_table_first
   # csv file the data is being sourced from
   source source_filename
   
   # database/table the data should be loaded into.
   # the table will be created if it does not already exist
   database :adapter => 'sqlite3', :database => "db.sqlite3", :timeout => 5000
+  #database :adapter => 'sqlserver', :host => '192.168.1.49', :username => 'pci-tae', :password => 'fgfgf', :database => 'fgfgfgf'
   table 'people'
   
   # columns in the new table
