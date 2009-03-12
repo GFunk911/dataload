@@ -124,10 +124,3 @@ def dataload(&b)
   puts "Row Count: " + dsl.loader.ar.find(:all).size.to_s
 end
 
-dataload do
-  source "source.csv"
-  database :adapter => 'sqlite3', :database => "db.sqlite3", :timeout => 5000
-  table 'foobar'
-  string(:cat) { bar + "_cat" }
-end
-
