@@ -1,7 +1,23 @@
+class Both
+  include FromHash
+  fattr(:objs) { [] }
+  def method_missing(sym,*args,&b)
+    objs.each { |x| x.send(sym,*args,&b) }
+  end
+end
+
 class TableLoaderDSL
+  fattr(:table_name) { loader.table_name }
   fattr(:loader) { TableLoader.new }
+  fattr(:manager) { TableManager.new }
+  fattr(:both) { Both.new(:objs => [loader,manager]) }
+  def master
+    MasterLoader.instance
+  end
   def initialize(&b)
     @blk = b
+    instance_eval(&@blk)
+    master.add(self)
   end
   def column(name,type,&blk)
     blk ||= lambda { |x| x.send(name) }
@@ -17,19 +33,15 @@ class TableLoaderDSL
   def source(file)
     loader.source_filename = file
   end
-  def database(ops)
-    loader.db_ops = ops
-  end
   def table(name)
-    loader.table_name = name
+    both.table_name = name
   end
   def run!
-    instance_eval(&@blk)
+    manager.delete_rows! if @delete_existing_rows
     loader.load!
-    puts "Row Count: #{loader.ar_cls.count}"
   end
 end
 
 def table_dataload(&b)
-  TableLoaderDSL.new(&b).run!
+  TableLoaderDSL.new(&b)
 end

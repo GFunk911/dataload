@@ -2,7 +2,9 @@ require 'rubygems'
 require File.dirname(__FILE__) + '/../dataload'
 
 #setup the sample source file
-source_filename = File.dirname(__FILE__) + "/sample_source.csv"
+source_filename = File.dirname(__FILE__) + "/../../tmp/sample_source.csv"
+db_path = File.dirname(__FILE__) + "/../../tmp/sample.sqlite3"
+
 source_text = <<EOF
 name,age,city,state
 Bob Smith,24,Atlanta,GA
@@ -19,7 +21,7 @@ table_dataload do
   
   # database/table the data should be loaded into.
   # the table will be created if it does not already exist
-  database :adapter => 'sqlite3', :database => "db.sqlite3", :timeout => 5000
+  #database :adapter => 'sqlite3', :database => db_path, :timeout => 5000
   #database :adapter => 'sqlserver', :host => '192.168.1.49', :username => 'pci-tae', :password => 'fgfgf', :database => 'fgfgfgf'
   table 'people'
   
@@ -42,4 +44,9 @@ table_dataload do
   string(:last_name) { name.split[1] }
   integer(:age)
   string(:city_state) { "#{city}, #{state}" }
+end
+
+master_dataload do
+  database :adapter => 'sqlite3', :database => db_path, :timeout => 5000
+  load_order :people
 end
