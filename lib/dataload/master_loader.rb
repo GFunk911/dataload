@@ -19,7 +19,9 @@ class MasterLoader
     tables_in_load_order.each { |t| t.loader.load! }
   end
   def run!
-    tables_in_load_order.each { |t| t.loader.block_size = block_size }
+    tables_in_load_order.each do |t| 
+      t.loader.block_size = block_size 
+    end
     tm("MasterLoader run") do
       connect!
       delete_rows!

@@ -7,3 +7,9 @@ class FasterCSV::Row
     end
   end
 end
+
+class FasterCSV
+  def self.each(*args,&b)
+    foreach(*args,&b)
+  end
+end

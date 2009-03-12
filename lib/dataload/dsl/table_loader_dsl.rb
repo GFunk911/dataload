@@ -40,6 +40,9 @@ class TableLoaderDSL
     manager.delete_rows! if @delete_existing_rows
     loader.load!
   end
+  def delimiter(x)
+    loader.delimiter = x
+  end
 end
 
 def table_dataload(&b)

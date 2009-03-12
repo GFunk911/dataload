@@ -25,28 +25,29 @@ end
 class TableLoader
   include TableModule
   attr_accessor_nn :source_filename
+  fattr(:delimiter) { "," }
   fattr(:block_size) { 1000 }
   fattr(:columns) { [] }
-  fattr_tm(:source_rows) do
-    Enumerable::Enumerator.new(FasterCSV,:foreach,source_filename,:headers => true).to_a
+  fattr(:source_row_groups) do
+    e = enum(FasterCSV,:foreach,source_filename,:headers => true, :col_sep => delimiter)
+    enum(e,:each_by,block_size)
   end
   def target_hash_for_row(row)
     columns.inject({}) { |h,col| h.merge(col.target_name => col.target_value(row)) }
   end
-  fattr(:target_hashes) do
-    source_rows.map { |x| target_hash_for_row(x) }
+  def target_hashes(rows)
+    rows.map { |x| target_hash_for_row(x) }
   end
-  fattr(:target_hash_groups) do
-    Enumerable::Enumerator.new(target_hashes,:each_by,block_size).to_a
+  def target_hash_groups
+    source_row_groups.each_with_index do |rows,i|
+      yield(target_hashes(rows),(i+1)*block_size)
+    end
   end
   def load!
     migrate!
-    #ar_objects.each { |x| x.save! }
-    tm("target_hash_groups") { target_hash_groups }
-    tm("actual insert") do
-      target_hash_groups.each do |hs|
-        BatchInsert.new(:rows => hs, :table_name => table_name).insert!
-      end
+    target_hash_groups do |hs,num_inserted|
+      BatchInsert.new(:rows => hs, :table_name => table_name).insert!
+      puts "Inserted #{num_inserted} #{Time.now}" if num_inserted%25000 == 0
     end
     puts "#{table_name} Row Count: #{ar_cls.count}"
   end
