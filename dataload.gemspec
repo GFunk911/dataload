@@ -16,6 +16,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{TODO}
+  s.add_dependency 'GFunk911-mharris_ext'
+  s.add_dependency 'activerecord'
+  s.add_dependency 'fastercsv'
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
