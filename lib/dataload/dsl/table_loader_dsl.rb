@@ -22,7 +22,7 @@ class TableLoaderDSL
   end
 end
 
-def dataload(&b)
+def table_dataload(&b)
   dsl = TableLoaderDSL.new
   dsl.instance_eval(&b)
   dsl.loader.load!

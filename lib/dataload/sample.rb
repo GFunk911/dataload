@@ -12,7 +12,7 @@ EOF
 File.create(source_filename,source_text)
 
 #load into a database, creating the table if needed
-dataload do
+table_dataload do
   #clear_table_first
   # csv file the data is being sourced from
   source source_filename
