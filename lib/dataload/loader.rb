@@ -15,7 +15,7 @@ end
 
 class Loader
   fattr(:columns) { [] }
-  attr_accessor :source_filename, :db_ops
+  attr_accessor :source_filename, :db_ops, :table_name
   fattr(:source_rows) do
     res = []
     FasterCSV.foreach(source_filename, :headers => true) do |row|
@@ -40,14 +40,17 @@ class Loader
     Struct.new(*target_column_names)
   end
   fattr(:migration) do
+    raise "must define table" unless table_name
     cls = Class.new(ActiveRecord::Migration)
     class << cls
-      attr_accessor :cols
+      attr_accessor :cols, :table_name
     end
     cls.cols = columns
+    cls.table_name = table_name
+    puts "Table: #{table_name}"
     cls.class_eval do
       def self.up
-        create_table :foo do |t|
+        create_table table_name do |t|
           cols.each do |col|
             t.column col.target_name, :string
           end
@@ -58,14 +61,14 @@ class Loader
   end
   fattr(:ar) do
     cls = Class.new(ActiveRecord::Base)
-    cls.class_eval do
-      set_table_name :foo
-    end
+    cls.send(:set_table_name, table_name)
     cls
   end
   def migrate!
     ar.find(:first)
-  rescue
+  rescue => exp
+    puts "find failed"
+    puts exp.inspect
     migration.migrate(:up)
   end
   fattr(:ar_objects) do
@@ -92,15 +95,25 @@ end
 
 class LoaderDSL
   fattr(:loader) { Loader.new }
-  def column(name,&blk)
+  def column(name,type,&blk)
     blk ||= lambda { |x| x.send(name) }
     loader.columns << Column.new(:target_name => name, :blk => blk)
+  end
+  def method_missing(sym,*args,&b)
+    if [:string, :text, :integer, :float, :decimal, :datetime, :timestamp, :time, :date, :binary, :boolean].include?(sym)
+      column(args.first,sym,&b)
+    else
+      super(sym,*args,&b)
+    end
   end
   def source(file)
     loader.source_filename = file
   end
   def database(ops)
     loader.db_ops = ops
+  end
+  def table(name)
+    loader.table_name = name
   end
 end
 
@@ -113,7 +126,8 @@ end
 
 dataload do
   source "source.csv"
-  column(:cat) { bar + "_cat" }
   database :adapter => 'sqlite3', :database => "db.sqlite3", :timeout => 5000
+  table 'foobar'
+  string(:cat) { bar + "_cat" }
 end
 
