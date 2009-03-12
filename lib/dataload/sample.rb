@@ -6,12 +6,11 @@ source_filename = File.dirname(__FILE__) + "/../../tmp/sample_source.csv"
 db_path = File.dirname(__FILE__) + "/../../tmp/sample.sqlite3"
 
 source_text = <<EOF
-name,age,city,state
 Bob Smith,24,Atlanta,GA
 Jane Doe,35,Buffalo,NY
 Evan Stein,31,Princeton,NJ
 EOF
-source_text = (1..1000).map { source_text }.join
+source_text = "name,age,city,state\n" + (1..10000).map { source_text }.join
 File.create(source_filename,source_text)
 
 #load into a database, creating the table if needed

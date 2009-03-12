@@ -6,6 +6,7 @@ rescue
 end
 require 'fastercsv'
 require 'activerecord'
+require 'facets/enumerable'
 
 %w(migration column table_module batch_insert).each { |x| require File.dirname(__FILE__) + "/#{x}" }
 Dir[File.dirname(__FILE__) + "/ext/*.rb"].each { |x| require x }
@@ -20,16 +21,18 @@ class TableLoader
   def target_hash_for_row(row)
     columns.inject({}) { |h,col| h.merge(col.target_name => col.target_value(row)) }
   end
-  def target_hashes
+  fattr(:target_hashes) do
     source_rows.map { |x| target_hash_for_row(x) }
   end
-  def ar_objects
-    target_hashes.map { |h| ar_cls.new(h) }
+  def target_hash_groups
+    Enumerable::Enumerator.new(target_hashes,:each_by,1000).to_a
   end
   def load!
     migrate!
     #ar_objects.each { |x| x.save! }
-    BatchInsert.new(:rows => ar_objects).insert!
+    target_hash_groups.each do |hs|
+      BatchInsert.new(:rows => hs, :table_name => table_name).insert!
+    end
     puts "#{table_name} Row Count: #{ar_cls.count}"
   end
 end

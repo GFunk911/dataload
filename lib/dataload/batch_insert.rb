@@ -1,7 +1,6 @@
 class BatchInsert
   include FromHash
-  attr_accessor :rows
-  fattr(:table_name) { rows.first.class.table_name }
+  attr_accessor :rows, :table_name
   fattr(:column_names) { rows.first.sorted_column_names }
   fattr(:values_sql) do
     "VALUES " + rows.map { |x| x.insert_values_sql }.join(", ")

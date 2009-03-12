@@ -21,10 +21,8 @@ class MasterLoader
   def run!
     tm("MasterLoader run") do
       connect!
-      #ActiveRecord::Base.transaction do
-        delete_rows!
-        load_rows!
-      #end
+      delete_rows!
+      load_rows!
     end
   end
   def connect!

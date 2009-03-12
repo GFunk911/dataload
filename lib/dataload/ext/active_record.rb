@@ -1,9 +1,9 @@
-class ActiveRecord::Base
+class Hash
   def sorted_column_names
-    attributes.keys.sort_by { |x| x.to_s }
+    keys.sort_by { |x| x.to_s }
   end
   def insert_values_sql
-    res = sorted_column_names.map { |x| "'#{attributes[x]}'" }.join(",")
+    res = sorted_column_names.map { |x| "'#{self[x]}'" }.join(",")
     "(#{res})"
   end
 end
