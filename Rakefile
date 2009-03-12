@@ -12,6 +12,7 @@ begin
     gem.add_dependency 'activerecord'
     gem.add_dependency 'GFunk911-mharris_ext'
     gem.add_dependency 'fastercsv'
+    gem.files = FileList["**/*.rb",'LICENSE','*.rdoc','*.yml'] 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
