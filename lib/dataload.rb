@@ -1,1 +1,1 @@
-require File.dirname(__FILE__) + "/loader"
+require File.dirname(__FILE__) + "/dataload/loader"
