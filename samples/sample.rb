@@ -1,9 +1,9 @@
 require 'rubygems'
-require File.dirname(__FILE__) + '/../dataload'
+require File.dirname(__FILE__) + '/../lib/dataload'
 
 #setup the sample source file
-source_filename = File.dirname(__FILE__) + "/../../tmp/sample_source.csv"
-db_path = File.dirname(__FILE__) + "/../../tmp/sample.sqlite3"
+source_filename = File.dirname(__FILE__) + "/../tmp/sample_source.csv"
+db_path = File.dirname(__FILE__) + "/../tmp/sample.sqlite3"
 
 source_text = <<EOF
 Bob Smith,24,Atlanta,GA
@@ -49,8 +49,8 @@ table_dataload do
 end
 
 master_dataload do
-  #database :adapter => 'sqlite3', :database => db_path, :timeout => 5000
-  database :adapter => 'mysql', :database => 'dataload_test', :username => 'root'
+  database :adapter => 'sqlite3', :database => db_path, :timeout => 5000
+  #database :adapter => 'mysql', :database => 'dataload_test', :username => 'root'
   load_order :people
   block_size 1000
 end
