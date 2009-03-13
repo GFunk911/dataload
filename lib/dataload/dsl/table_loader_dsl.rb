@@ -25,7 +25,7 @@ class TableLoaderDSL
   end
   def method_missing(sym,*args,&b)
     if [:string, :text, :integer, :float, :decimal, :datetime, :timestamp, :time, :date, :binary, :boolean].include?(sym)
-      column(args.first,sym,&b)
+      args.flatten.each { |x| column(x,sym,&b) }
     else
       super(sym,*args,&b)
     end
