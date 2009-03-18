@@ -29,6 +29,11 @@ class MasterLoader
     end
   end
   def connect!
+    if db_ops[:adapter].to_s == 'sqlserver'
+      gem 'activerecord-sqlserver-adapter'
+      require 'active_record/connection_adapters/sqlserver_adapter'
+      require File.dirname(__FILE__) + "/sqlserver_ext"
+    end
     ActiveRecord::Base.establish_connection(db_ops)
     Dataload.log "Established Connection"
   end
