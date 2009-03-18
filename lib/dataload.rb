@@ -22,13 +22,20 @@ class Dataload
 end
 
 class DataloadLogger
+  fattr(:first) { true }
   def log(str)
-    File.append(filename,"#{Time.now.short_dt} #{str}\n")
+    File.create(current_filename,"") if first
+    File.append(timestamp_filename,"#{Time.now.short_dt} #{str}\n")
+    File.append(current_filename,"#{Time.now.short_dt} #{str}\n")
+    self.first = false
   end
-  fattr(:filename) do
+  fattr(:timestamp_filename) do
     t = Time.now.strftime("%Y%m%d%H%M%S")
     res = File.expand_path("dataload_#{t}.log")
     puts "Logging to #{res}"
     res
+  end
+  fattr(:current_filename) do
+    File.expand_path("dataload.log")
   end
 end
