@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{dataload}
-  s.version = "0.9.1"
+  s.version = "0.9.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mike Harris"]
   s.date = %q{2009-03-18}
   s.email = %q{GFunk913@gmail.com}
   s.extra_rdoc_files = ["README.rdoc", "LICENSE"]
-  s.files = ["lib/dataload/batch_insert.rb", "lib/dataload/column.rb", "lib/dataload/dsl/master_loader_dsl.rb", "lib/dataload/dsl/table_loader_dsl.rb", "lib/dataload/ext/active_record.rb", "lib/dataload/ext/enumerator.rb", "lib/dataload/ext/faster_csv.rb", "lib/dataload/master_loader.rb", "lib/dataload/migration.rb", "lib/dataload/table_loader.rb", "lib/dataload/table_manager.rb", "lib/dataload/table_module.rb", "lib/dataload.rb", "samples/sample.rb", "samples/sample2.rb", "samples/tables.rb", "spec/dataload_spec.rb", "spec/spec_helper.rb", "LICENSE", "README.rdoc", "VERSION.yml"]
+  s.files = ["lib/dataload/batch_insert.rb", "lib/dataload/column.rb", "lib/dataload/dsl/master_loader_dsl.rb", "lib/dataload/dsl/table_loader_dsl.rb", "lib/dataload/ext/active_record.rb", "lib/dataload/ext/enumerator.rb", "lib/dataload/ext/faster_csv.rb", "lib/dataload/master_loader.rb", "lib/dataload/migration.rb", "lib/dataload/sqlserver_ext.rb", "lib/dataload/table_loader.rb", "lib/dataload/table_manager.rb", "lib/dataload/table_module.rb", "lib/dataload.rb", "samples/sample.rb", "samples/sample2.rb", "samples/tables.rb", "spec/dataload_spec.rb", "spec/spec_helper.rb", "LICENSE", "README.rdoc", "VERSION.yml", "tmp"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/GFunk911/dataload}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
