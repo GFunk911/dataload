@@ -20,8 +20,14 @@ class TableLoaderDSL
     master.add(self)
   end
   def column(name,type,&blk)
-    blk ||= lambda { |x| x.send(name) }
-    loader.columns << Column.new(:target_name => name, :blk => blk)
+    real_name = name
+    if name.is_a?(Hash)
+      raise "block given with hash" if block_given?
+      blk = lambda { |x| x.send(name.values.first) }
+      real_name = name.keys.first
+    end
+    blk ||= lambda { |x| x.send(real_name) }
+    loader.columns << Column.new(:target_name => real_name, :blk => blk)
   end
   def method_missing(sym,*args,&b)
     if [:string, :text, :integer, :float, :decimal, :datetime, :timestamp, :time, :date, :binary, :boolean].include?(sym)

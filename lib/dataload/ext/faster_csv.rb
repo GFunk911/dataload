@@ -1,6 +1,6 @@
 class FasterCSV::Row
   def method_missing(sym,*args,&b)
-    if self[sym.to_s]
+    if self[sym.to_s] or include?(sym.to_s)
       self[sym.to_s].safe_to_num
     else
       super(sym,*args,&b)
